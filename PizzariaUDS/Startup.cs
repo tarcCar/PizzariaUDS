@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PizzariaUDS.Repositories;
+using PizzariaUDS.Repositories.Interfaces;
 
 namespace PizzariaUDS
 {
@@ -25,7 +29,32 @@ namespace PizzariaUDS
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //configurando o gzip da compressao das respostas
+            services.Configure<GzipCompressionProviderOptions>(
+               options => options.Level = CompressionLevel.Optimal
+               );
+
+            services.AddResponseCompression(
+                options =>
+                {
+                    options.Providers.Add<GzipCompressionProvider>();
+                    options.EnableForHttps = true;
+                });
+
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options =>
+                {
+                    //configura para não colocar campos com valor nulo nas respostas
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                });
+
+            //Ativa o uso de cache em memoria
+            services.AddMemoryCache();
+
+            #region Injeção dependencias
+            services.AddTransient<ITamanhoRepository, TamanhoRepository>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +71,7 @@ namespace PizzariaUDS
             }
 
             app.UseHttpsRedirection();
+            app.UseResponseCompression();
             app.UseMvc();
         }
     }
