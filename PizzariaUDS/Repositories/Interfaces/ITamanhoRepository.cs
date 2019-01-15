@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PizzariaUDS.Repositories.Interfaces
 {
-    public interface ITamanhoPizzaRepository
+    public interface ITamanhoRepository
     {
         Task<IEnumerable<Tamanho>> ListarAsync();
         Task<Tamanho> SalvarAsync(Tamanho tamanhoPizza);

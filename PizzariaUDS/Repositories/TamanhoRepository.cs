@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PizzariaUDS.Repositories
 {
-    public class TamanhoPizzaRepository : MySQLRepository, ITamanhoPizzaRepository
+    public class TamanhoRepository : MySQLRepository, ITamanhoRepository
     {
 
         public async Task AlterarAsync(Tamanho tamanhoPizza)
