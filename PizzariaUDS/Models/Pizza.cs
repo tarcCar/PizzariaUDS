@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 namespace PizzariaUDS.Models
 {
-    public partial class Pizza
+    [Table("pizza")]
+    public class Pizza
     {
         public Pizza()
         {
             Adicionais = new HashSet<Adicional>();
         }
-
+        [Key]
         public int Id { get; set; }
         public short SaborId { get; set; }
         public short TamanhoId { get; set; }
