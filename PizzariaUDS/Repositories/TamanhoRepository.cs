@@ -1,14 +1,24 @@
 ﻿using Dapper.Contrib.Extensions;
+using MySql.Data.MySqlClient;
 using PizzariaUDS.Models;
 using PizzariaUDS.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace PizzariaUDS.Repositories
 {
-    public class TamanhoRepository : MySQLRepository, ITamanhoRepository
+    public class TamanhoRepository : ITamanhoRepository
     {
+        private readonly IRepository repository;
+        private readonly IDbConnection Database;
+
+        public TamanhoRepository(IRepository repository)
+        {
+            this.repository = repository;
+            Database = repository.Database;
+        }
 
         public async Task AlterarAsync(Tamanho tamanhoPizza)
         {

@@ -1,27 +1,27 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+using PizzariaUDS.Repositories.Interfaces;
 using System;
 using System.Configuration;
+using System.Data;
 
 namespace PizzariaUDS.Repositories
 {
-    public class MySQLRepository : IDisposable
+    public class MySQLRepository : IDisposable, IRepository
     {
 
         private MySqlConnection _connection = null;
         private string _connectionStringId;
         private string _connectionString;
+        private IConfiguration configuration;
 
-        public MySQLRepository()
-            : this("MySQL")
+        public MySQLRepository(IConfiguration configuration)
         {
-
+            this.configuration = configuration;
+            _connectionStringId = "MySQL";
         }
 
-        public MySQLRepository(string connectionStringId)
-        {
-            _connectionStringId = connectionStringId;
-        }
-
+        
         public virtual string ConnnectionStringId
         {
             get
@@ -30,7 +30,7 @@ namespace PizzariaUDS.Repositories
             }
         }
 
-        protected MySqlConnection Database
+        public IDbConnection Database
         {
             get
             {
@@ -38,7 +38,7 @@ namespace PizzariaUDS.Repositories
                 {
                     if (string.IsNullOrEmpty(_connectionString))
                     {
-                        _connectionString = ConfigurationManager.ConnectionStrings[ConnnectionStringId].ConnectionString;
+                        _connectionString = configuration.GetConnectionString(_connectionStringId);
                     }
 
                     _connection = new MySqlConnection(_connectionString);

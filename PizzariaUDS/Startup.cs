@@ -56,6 +56,7 @@ namespace PizzariaUDS
 
             //Injeçoes de depencias
             #region Injeção dependencias
+            services.AddSingleton<IRepository, MySQLRepository>();
             #region Services
             services.AddTransient<ITamanhoService, TamanhoService>();
             #endregion

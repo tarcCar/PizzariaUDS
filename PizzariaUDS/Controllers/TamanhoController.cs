@@ -34,6 +34,10 @@ namespace PizzariaUDS.Controllers
 
                 var tamanho = await memoryCache.GetOrCreateAsync($"tamanho{id}", async context =>
                 {
+                    //define quanto tempo o cache vai ficar em memoria
+                    context.SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+                    //prioridade quando o sistema for limpar a memoria
+                    context.SetPriority(CacheItemPriority.Normal);
                     return await tamanhoService.RecuperarPorIdAsync(id);
                 });
 
@@ -140,7 +144,7 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AlterarAsync([FromRoute] int id, [FromBody] Tamanho tamanhoPizzaAlterar)
+        public async Task<IActionResult> AlterarAsync([FromRoute] int id, [FromBody] Tamanho tamanhoPizzaAlterar,[FromServices] IMemoryCache memoryCache)
         {
             try
             {
@@ -162,6 +166,9 @@ namespace PizzariaUDS.Controllers
                     return BadRequest("Descrição do tamanho não de ser vazia!");
 
                 await tamanhoService.AlterarAsync(tamanhoPizzaAlterar);
+
+                memoryCache.Remove($"tamanho{id}");
+
                 return Ok(tamanhoPizzaAlterar);
             }
             catch (Exception)
