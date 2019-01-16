@@ -165,7 +165,7 @@ namespace PizzariaUDS.Controllers
                 if (string.IsNullOrWhiteSpace(tamanhoPizza.Descricao))
                     return BadRequest("Descrição do tamanho não de ser vazia!");
 
-                await tamanhoService.AlterarAsync(tamanhoPizzaAlterar);
+                await tamanhoService.AlterarAsync(id,tamanhoPizzaAlterar);
 
                 memoryCache.Remove($"tamanho{id}");
 

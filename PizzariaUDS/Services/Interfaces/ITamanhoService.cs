@@ -10,7 +10,7 @@ namespace PizzariaUDS.Services.Interfaces
     {
         Task<IEnumerable<Tamanho>> ListarAsync();
         Task<Tamanho> SalvarAsync(Tamanho tamanho);
-        Task AlterarAsync(Tamanho tamanho);
+        Task AlterarAsync(int id,Tamanho tamanho);
         Task<Tamanho> RecuperarPorIdAsync(int id);
         Task ExcluirAsync(Tamanho tamanho);
     }

@@ -1,6 +1,7 @@
 ﻿using PizzariaUDS.Models;
 using PizzariaUDS.Repositories.Interfaces;
 using PizzariaUDS.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +19,11 @@ namespace PizzariaUDS.Services
             this.tamanhoRepository = tamanhoRepository;
         }
 
-        public async Task AlterarAsync(Tamanho tamanho) => await tamanhoRepository.AlterarAsync(tamanho);
+        public async Task AlterarAsync(int id, Tamanho tamanho)
+        {
+            tamanho.Id = Convert.ToInt16(id);
+            await tamanhoRepository.AlterarAsync(tamanho);
+        }
 
         public async Task ExcluirAsync(Tamanho tamanho) => await tamanhoRepository.ExcluirAsync(tamanho);
 
