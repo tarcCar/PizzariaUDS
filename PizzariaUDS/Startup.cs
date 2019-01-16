@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PizzariaUDS.Repositories;
 using PizzariaUDS.Repositories.Interfaces;
+using PizzariaUDS.Services;
+using PizzariaUDS.Services.Interfaces;
 
 namespace PizzariaUDS
 {
@@ -52,8 +54,14 @@ namespace PizzariaUDS
             //Ativa o uso de cache em memoria
             services.AddMemoryCache();
 
+            //Injeçoes de depencias
             #region Injeção dependencias
+            #region Services
+            services.AddTransient<ITamanhoService, TamanhoService>();
+            #endregion
+            #region Repositories
             services.AddTransient<ITamanhoRepository, TamanhoRepository>();
+            #endregion
             #endregion
         }
 
