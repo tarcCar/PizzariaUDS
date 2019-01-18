@@ -59,9 +59,11 @@ namespace PizzariaUDS
             services.AddSingleton<IRepository, MySQLRepository>();
             #region Services
             services.AddTransient<ITamanhoService, TamanhoService>();
+            services.AddTransient<ISaborService, SaborService>();
             #endregion
             #region Repositories
             services.AddTransient<ITamanhoRepository, TamanhoRepository>();
+            services.AddTransient<ISaborRepository, SaborRepository>();
             #endregion
             #endregion
         }
