@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace PizzariaUDS.Repositories
 {
+    /// <summary>
+    /// Classe de acesso a base da dados do tamanho
+    /// </summary>
     public class TamanhoRepository : ITamanhoRepository
     {
         private readonly IRepository repository;

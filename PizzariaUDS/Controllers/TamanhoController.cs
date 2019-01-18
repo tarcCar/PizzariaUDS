@@ -118,7 +118,7 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ExcluirAsync([FromRoute] int id)
+        public async Task<IActionResult> ExcluirAsync([FromRoute] int id,[FromServices] IMemoryCache memoryCache)
         {
             try
             {
@@ -131,6 +131,9 @@ namespace PizzariaUDS.Controllers
                     return NotFound($"Não foi encontrado o tamanho com id: {id}");
 
                 await tamanhoService.ExcluirAsync(tamanho);
+                //remove o cache da lista de tamanhos por que agora tem um novo tamanho;
+                memoryCache.Remove("listaTamanhoPizza");
+                memoryCache.Remove($"tamanho{id}");
                 return NoContent();
             }
             catch (Exception)

@@ -7,6 +7,10 @@ using System.Data;
 
 namespace PizzariaUDS.Repositories
 {
+    /// <summary>
+    /// Classe que faz a conexao com a base dados, é utilizada vai injeção de depencias
+    /// nos repositories
+    /// </summary>
     public class MySQLRepository : IDisposable, IRepository
     {
 
