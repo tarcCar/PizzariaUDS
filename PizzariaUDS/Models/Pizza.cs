@@ -28,6 +28,7 @@ namespace PizzariaUDS.Models
                 if (value != null)
                 {
                     TempoPreparo += value.TempoAdicional ?? 0;
+                    SaborId = value.Id;
                 }
                 _sabor = value;
             }
@@ -47,6 +48,7 @@ namespace PizzariaUDS.Models
                 {
                     TempoPreparo += value.TempoPreparo;
                     Valor += value.Valor;
+                    TamanhoId = value.Id;
                 }
                 _tamanho = value;
             }

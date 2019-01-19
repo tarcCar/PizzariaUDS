@@ -131,7 +131,7 @@ namespace PizzariaUDS.Controllers
                     return NotFound($"Não foi encontrado o tamanho com id: {id}");
 
                 await tamanhoService.ExcluirAsync(tamanho);
-                //remove o cache da lista de tamanhos por que agora tem um novo tamanho;
+                //remove o cache da lista de tamanhos por que pq o tamanho podia tar na lista;
                 memoryCache.Remove("listaTamanhoPizza");
                 memoryCache.Remove($"tamanho{id}");
                 return NoContent();
