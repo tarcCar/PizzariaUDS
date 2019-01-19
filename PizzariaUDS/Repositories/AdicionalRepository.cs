@@ -1,0 +1,50 @@
+﻿using Dapper.Contrib.Extensions;
+using Microsoft.EntityFrameworkCore;
+using PizzariaUDS.Models;
+using PizzariaUDS.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace PizzariaUDS.Repositories
+{
+    public class AdicionalRepository : IAdicionalRepository
+    {
+        private readonly IRepository repository;
+        private readonly IDbConnection Database;
+
+        public AdicionalRepository(IRepository repository)
+        {
+            this.repository = repository;
+            Database = repository.Database;
+        }
+        public async Task AlterarAsync(Adicional adicional)
+        {
+            await Database.UpdateAsync(adicional);
+        }
+
+        public async Task ExcluirAsync(Adicional adicional)
+        {
+            await Database.DeleteAsync(adicional);
+        }
+
+        public async Task<IEnumerable<Adicional>> ListarAsync()
+        {
+            return await Database.GetAllAsync<Adicional>();
+        }
+
+        public async Task<Adicional> RecuperarPorIdAsync(int id)
+        {
+            return await Database.GetAsync<Adicional>(id);
+        }
+
+        public async Task<Adicional> SalvarAsync(Adicional adicional)
+        {
+            var id = await Database.InsertAsync(adicional);
+            adicional.Id = id;
+            return adicional;
+        }
+    }
+}
