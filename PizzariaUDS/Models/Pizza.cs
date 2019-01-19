@@ -1,5 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace PizzariaUDS.Models
 {
     [Table("pizza")]
@@ -60,6 +62,11 @@ namespace PizzariaUDS.Models
         public void AdicionalAdicional(Adicional adicional)
         {
             Adicionais.Add(adicional);
+        }
+
+        public bool TemAdicional(Adicional adicional)
+        {
+            return Adicionais.Any(a => a.Id == adicional.Id);
         }
     }
 }

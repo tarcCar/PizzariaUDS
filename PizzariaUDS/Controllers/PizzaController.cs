@@ -186,5 +186,38 @@ namespace PizzariaUDS.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir a pizza do id: {id}");
             }
         }
+
+        [HttpPost("{id}/Adicional")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AdiconarAdicionalAsync([FromRoute] int id, [FromBody] Adicional adicional)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest("Id do sabor não pode ser menor ou igual a zero!");
+
+                if (adicional == null)
+                    return BadRequest("Adicional não pode ser nulo!");
+
+                var pizza = await pizzaService.RecuperarPorIdAsync(id);
+
+                if (pizza == null)
+                    return BadRequest("Pizza escolhida não existe");
+
+                
+                if (pizza.TemAdicional(adicional))
+                    return BadRequest($"Essa pizza ja tem o adicional {adicional.Descricao}!");
+
+                await pizzaService.AdicionarAdicionalAsync(pizza, adicional);
+
+                return Ok(pizza);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar a pizza");
+            }
+        }
     }
 }

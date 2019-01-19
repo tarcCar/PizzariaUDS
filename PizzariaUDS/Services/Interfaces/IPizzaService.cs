@@ -13,5 +13,6 @@ namespace PizzariaUDS.Services.Interfaces
         Task AlterarAsync(int id, Pizza pizza);
         Task<Pizza> RecuperarPorIdAsync(int id);
         Task ExcluirAsync(Pizza pizza);
+        Task<Pizza> AdicionarAdicionalAsync(Pizza pizza, Adicional adicional);
     }
 }
