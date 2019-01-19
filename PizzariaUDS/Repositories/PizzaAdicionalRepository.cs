@@ -5,7 +5,6 @@ using PizzariaUDS.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PizzariaUDS.Repositories
@@ -32,10 +31,32 @@ namespace PizzariaUDS.Repositories
             await Database.DeleteAsync(pizzaAdicional);
         }
 
+        public async Task ExcluirAsync(Pizza pizza, IDbTransaction transaction)
+        {
+            var pizzasAdicionais = await ListarAsync(pizza, transaction);
+            var connection = transaction.Connection;
+            foreach (var pizzaAdicional in pizzasAdicionais)
+            {
+                await connection.DeleteAsync(pizzaAdicional, transaction);
+            }
+        }
+
         public async Task<IEnumerable<PizzaAdicional>> ListarAsync()
         {
             return await Database.GetAllAsync<PizzaAdicional>();
         }
+
+        private async Task<IEnumerable<PizzaAdicional>> ListarAsync(Pizza pizza, IDbTransaction transaction)
+        {
+            var sql = "SELECT id,pizzaId,adicionalId FROM pizzaria.pizza_adicional where pizzaId = @pizzaId";
+            var parametros = new DynamicParameters();
+            parametros.Add("@pizzaId", pizza.Id);
+
+            var connection = transaction.Connection;
+            return await connection.QueryAsync<PizzaAdicional>(sql, parametros, transaction);
+        }
+
+
 
         public async Task<PizzaAdicional> SalvarAsync(PizzaAdicional pizzaAdicional, IDbTransaction transaction)
         {
@@ -58,7 +79,7 @@ namespace PizzariaUDS.Repositories
             var parametros = new DynamicParameters();
             parametros.Add("@idAdicional", idAdicional);
 
-            var resultado = await Database.QueryFirstOrDefaultAsync<PizzaAdicional>(sql,parametros);
+            var resultado = await Database.QueryFirstOrDefaultAsync<PizzaAdicional>(sql, parametros);
 
             return resultado != null;
 

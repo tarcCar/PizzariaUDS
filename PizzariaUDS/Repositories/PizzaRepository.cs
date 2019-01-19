@@ -46,10 +46,10 @@ namespace PizzariaUDS.Repositories
                     transaction.Commit();
                     return pizza;
                 }
-                catch (System.Exception ex)
+                catch (System.Exception)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    throw;
                 }
 
             }
@@ -66,7 +66,21 @@ namespace PizzariaUDS.Repositories
         }
         public async Task ExcluirAsync(Pizza pizza)
         {
-            await Database.DeleteAsync(pizza);
+            if (Database.State == ConnectionState.Closed) Database.Open();
+            using (var transaction = Database.BeginTransaction())
+            {
+                try
+                {
+                    await pizzaAdicionalRepository.ExcluirAsync(pizza,transaction);
+                    await Database.DeleteAsync(pizza,transaction);
+                    transaction.Commit();
+                }
+                catch (System.Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         public async Task<IEnumerable<Pizza>> ListarAsync()

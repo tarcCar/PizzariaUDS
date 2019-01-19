@@ -15,5 +15,6 @@ namespace PizzariaUDS.Repositories.Interfaces
         Task<bool> TemPizzaComAdicional(int idAdicional);
         Task ExcluirAsync(PizzaAdicional pizzaAdicional,IDbTransaction transaction);
         Task ExcluirAsync(PizzaAdicional pizzaAdicional);
+        Task ExcluirAsync(Pizza pizza, IDbTransaction transaction);
     }
 }
