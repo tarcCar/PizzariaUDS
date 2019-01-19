@@ -13,5 +13,7 @@ namespace PizzariaUDS.Repositories.Interfaces
         Task<Adicional> RecuperarPorIdAsync(int id);
         Task ExcluirAsync(Adicional adicional);
         Task AlterarAsync(Adicional adicional);
+        Task<IEnumerable<Adicional>> ListarAdicionaisPizzaAsync(int pizzaId);
+        Task<IEnumerable<PizzaAdicional>> ListarAdicionaisPizzaAsync(IEnumerable<int> pizzasIds);
     }
 }

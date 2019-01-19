@@ -26,7 +26,9 @@ namespace PizzariaUDS.Models
             set
             {
                 //Antes de trocar de sabor subtrai o tempo adicional se tiver
-                TempoPreparo -= _sabor?.TempoAdicional ?? 0;
+                if (_sabor != null)
+                    TempoPreparo -= _sabor?.TempoAdicional ?? 0;
+
                 if (value != null)
                 {
                     TempoPreparo += value.TempoAdicional ?? 0;
@@ -44,8 +46,12 @@ namespace PizzariaUDS.Models
             set
             {
                 //Antes de trovar o tamanho subtrai o valor e tempo de preparo do antigo
-                TempoPreparo -= _tamanho.TempoPreparo;
-                Valor -= _tamanho.Valor;
+                if (_tamanho != null)
+                {
+                    TempoPreparo -= _tamanho.TempoPreparo;
+                    Valor -= _tamanho.Valor;
+                }
+
                 if (value != null)
                 {
                     TempoPreparo += value.TempoPreparo;
@@ -57,10 +63,15 @@ namespace PizzariaUDS.Models
         }
 
         [Computed]
-        public HashSet<Adicional> Adicionais { get; private set; }
+        public HashSet<Adicional> Adicionais { get;  set; }
 
         public void AdicionalAdicional(Adicional adicional)
         {
+            if (adicional.TempoPreparo.HasValue)
+                TempoPreparo += adicional.TempoPreparo.Value;
+            if (adicional.Valor.HasValue)
+                Valor += adicional.Valor.Value;
+
             Adicionais.Add(adicional);
         }
 
