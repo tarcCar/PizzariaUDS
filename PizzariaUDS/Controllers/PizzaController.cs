@@ -27,22 +27,14 @@ namespace PizzariaUDS.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RecuperarPorIdAsync([FromRoute] int id, [FromServices] IMemoryCache memoryCache)
+        public async Task<IActionResult> RecuperarPorIdAsync([FromRoute] int id)
         {
             try
             {
                 if (id <= 0)
                     return BadRequest("id não pode ser menor ou igual a 0.");
 
-                //Colocar o pizza com id em cache, pq raramente a pizza vai mudar
-                var pizza = await memoryCache.GetOrCreateAsync($"pizza{id}", async context =>
-                {
-                    //define quanto tempo o cache vai ficar em memoria
-                    context.SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
-                    //prioridade quando o sistema for limpar a memoria
-                    context.SetPriority(CacheItemPriority.Normal);
-                    return await pizzaService.RecuperarPorIdAsync(id);
-                });
+                var pizza =  await pizzaService.RecuperarPorIdAsync(id);
 
                 if (pizza == null)
                     return NotFound($"Não foi encontrado o pizza com id: {id}");
@@ -59,18 +51,11 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ListarAsync([FromServices] IMemoryCache memoryCache)
+        public async Task<IActionResult> ListarAsync()
         {
             try
             {
-                var pizzas = await memoryCache.GetOrCreateAsync("listaPizza", async context =>
-                {
-                    //define quanto tempo o cache vai ficar em memoria
-                    context.SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
-                    //prioridade quando o sistema for limpar a memoria
-                    context.SetPriority(CacheItemPriority.Normal);
-                    return await pizzaService.ListarAsync();
-                });
+                var pizzas =  await pizzaService.ListarAsync();
 
                 if (pizzas.Count() == 0)
                     return NotFound("Não foi encontrado nenhuma pizza");
@@ -86,7 +71,7 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SalvarAsync([FromBody] Pizza pizza, [FromServices] IMemoryCache memoryCache)
+        public async Task<IActionResult> SalvarAsync([FromBody] Pizza pizza)
         {
             try
             {
@@ -107,8 +92,7 @@ namespace PizzariaUDS.Controllers
                     return BadRequest("O sabor informado não existe!");
 
                 pizza = await pizzaService.SalvarAsync(pizza);
-                //Remove o cache de lista das pizza, por que tem um sabor novo
-                memoryCache.Remove("listaPizza");
+               
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Pizza", new { id = pizza.Id });
                 return Created(urlCriado, pizza);
             }
@@ -122,7 +106,7 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ExcluirAsync([FromRoute] int id, [FromServices] IMemoryCache memoryCache)
+        public async Task<IActionResult> ExcluirAsync([FromRoute] int id)
         {
             try
             {
@@ -152,7 +136,7 @@ namespace PizzariaUDS.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AlterarAsync([FromRoute] int id, [FromBody] Pizza pizza, [FromServices] IMemoryCache memoryCache)
+        public async Task<IActionResult> AlterarAsync([FromRoute] int id, [FromBody] Pizza pizza)
         {
             try
             {
@@ -182,8 +166,7 @@ namespace PizzariaUDS.Controllers
 
                 await pizzaService.AlterarAsync(id, pizza);
 
-                //remove o cache da pizza pelo id, para que o recuperar por id retorna com valor correto
-                memoryCache.Remove($"pizza{id}");
+               
                 return Ok(pizza);
             }
             catch (Exception)
