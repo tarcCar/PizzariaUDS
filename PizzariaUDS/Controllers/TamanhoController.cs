@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PizzariaUDS.Models;
 using PizzariaUDS.Services.Interfaces;
 
@@ -15,10 +16,11 @@ namespace PizzariaUDS.Controllers
     public class TamanhoController : ControllerBase
     {
         private readonly ITamanhoService tamanhoService;
-
-        public TamanhoController(ITamanhoService tamanhoService)
+        private readonly ILogger<TamanhoController> logger;
+        public TamanhoController(ITamanhoService tamanhoService, ILogger<TamanhoController> logger)
         {
             this.tamanhoService = tamanhoService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -46,9 +48,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(tamanho);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar o tamanho de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de recuperar o tamanho de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -78,9 +82,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(tamanhos);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de listar os tamanhos");
+                var messagem ="Ocorreu um erro na hora de listar os tamanhos";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -107,9 +113,11 @@ namespace PizzariaUDS.Controllers
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Tamanho", new { id = tamanhoPizza.Id });
                 return Created(urlCriado,tamanhoPizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar o tamanho de pizza");
+                var messagem = "Ocorreu um erro na hora de salvar o tamanho de pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -136,9 +144,11 @@ namespace PizzariaUDS.Controllers
                 memoryCache.Remove($"tamanho{id}");
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o tamanho de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o tamanho de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -174,9 +184,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(tamanhoPizzaAlterar);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o tamanho de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o tamanho de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
     }

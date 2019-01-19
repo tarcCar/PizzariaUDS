@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PizzariaUDS.Models;
 using PizzariaUDS.Services.Interfaces;
 using System;
@@ -14,10 +15,11 @@ namespace PizzariaUDS.Controllers
     public class AdicionalController : ControllerBase
     {
         private readonly IAdicionalService adicionalService;
-
-        public AdicionalController(IAdicionalService adicionalService)
+        private readonly ILogger<AdicionalController> logger;
+        public AdicionalController(IAdicionalService adicionalService, ILogger<AdicionalController> logger)
         {
             this.adicionalService = adicionalService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -46,9 +48,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(adicionalPizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar o adicional da pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de recuperar o adicional da pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError,messagem);
             }
         }
 
@@ -80,9 +84,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(adicionais);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de listar os adicionais da pizza");
+                var mensagem = "Ocorreu um erro na hora de listar os adicionais da pizza";
+                logger.LogError(ex, mensagem);
+                return StatusCode(StatusCodes.Status500InternalServerError,mensagem );
             }
         }
 
@@ -106,9 +112,11 @@ namespace PizzariaUDS.Controllers
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Adicional", new { id = adicional.Id });
                 return Created(urlCriado, adicional);
             }
-            catch (Exception)
+            catch (Exception ex )
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar o adicional da pizza");
+                var messagem = "Ocorreu um erro na hora de salvar o adicional da pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -131,9 +139,11 @@ namespace PizzariaUDS.Controllers
                 memoryCache.Remove("listaAdicionalPizza");
                 return Ok(adicional);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar o adicional da pizza");
+                var messagem = "Ocorreu um erro na hora de salvar o adicional da pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -166,9 +176,11 @@ namespace PizzariaUDS.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar o adicional da pizza do id: {id}");
+                var mensagem = $"Ocorreu um erro na hora de recuperar o adicional da pizza do id: {id}";
+                logger.LogError(ex, mensagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, mensagem);
             }
         }
     }

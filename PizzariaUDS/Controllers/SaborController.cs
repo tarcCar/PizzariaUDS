@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PizzariaUDS.Models;
 using PizzariaUDS.Services.Interfaces;
 using System;
@@ -14,10 +15,12 @@ namespace PizzariaUDS.Controllers
     public class SaborController : ControllerBase
     {
         private readonly ISaborService saborService;
+        private readonly ILogger<SaborController> logger;
 
-        public SaborController(ISaborService saborService)
+        public SaborController(ISaborService saborService, ILogger<SaborController> logger)
         {
             this.saborService = saborService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -46,9 +49,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(sabor);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar o sabor de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de recuperar o sabor de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -78,9 +83,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(sabores);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de listar os sabores");
+                var messagem = "Ocorreu um erro na hora de listar os sabores";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -97,9 +104,11 @@ namespace PizzariaUDS.Controllers
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Sabor", new { id = sabor.Id });
                 return Created(urlCriado, sabor);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar o sabor de pizza");
+                var messagem = "Ocorreu um erro na hora de salvar o sabor de pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -126,9 +135,11 @@ namespace PizzariaUDS.Controllers
                 memoryCache.Remove($"sabor{id}");
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o sabor de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o sabor de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -154,9 +165,11 @@ namespace PizzariaUDS.Controllers
                 memoryCache.Remove($"sabor{id}");
                 return Ok(sabor);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o sabor de pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o sabor de pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PizzariaUDS.Models;
 using PizzariaUDS.Services.Interfaces;
 
@@ -15,10 +16,11 @@ namespace PizzariaUDS.Controllers
     public class PedidoController : ControllerBase
     {
         private readonly IPedidoService pedidoService;
-
-        public PedidoController(IPedidoService pedidoService)
+        private readonly ILogger<PedidoController> logger;
+        public PedidoController(IPedidoService pedidoService, ILogger<PedidoController> logger)
         {
             this.pedidoService = pedidoService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -39,9 +41,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(pedido);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar o pedido  do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de recuperar o pedido  do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -61,9 +65,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(pedidos);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de listar os pedidos");
+                var messagem = "Ocorreu um erro na hora de listar os pedidos";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -78,9 +84,11 @@ namespace PizzariaUDS.Controllers
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Pedido", new { id = pedido.Id });
                 return Created(urlCriado, pedido);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar o pedido!");
+                var messagem = "Ocorreu um erro na hora de salvar o pedido!";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -103,9 +111,11 @@ namespace PizzariaUDS.Controllers
                 await pedidoService.ExcluirAsync(pedido);
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o pedido do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o pedido do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -129,9 +139,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(pedido);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir o pedido id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir o pedido id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
     }

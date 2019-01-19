@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PizzariaUDS.Models;
 using PizzariaUDS.Services.Interfaces;
 using System;
@@ -16,12 +17,14 @@ namespace PizzariaUDS.Controllers
         private readonly IPizzaService pizzaService;
         private readonly ITamanhoService tamanhoService;
         private readonly ISaborService saborService;
+        private readonly ILogger<PizzaController> logger;
 
-        public PizzaController(IPizzaService pizzaService, ITamanhoService tamanhoService, ISaborService saborService)
+        public PizzaController(IPizzaService pizzaService, ITamanhoService tamanhoService, ISaborService saborService, ILogger<PizzaController> logger)
         {
             this.pizzaService = pizzaService;
             this.tamanhoService = tamanhoService;
             this.saborService = saborService;
+            this.logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -41,9 +44,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(pizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de recuperar a pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de recuperar a pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -61,9 +66,11 @@ namespace PizzariaUDS.Controllers
                     return NotFound("Não foi encontrado nenhuma pizza");
                 return Ok(pizzas);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de listar de pizzas");
+                var messagem = "Ocorreu um erro na hora de listar de pizzas";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -96,9 +103,11 @@ namespace PizzariaUDS.Controllers
                 string urlCriado = Url.Action("RecuperarPorIdAsync", "Pizza", new { id = pizza.Id });
                 return Created(urlCriado, pizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar a pizza");
+                var messagem = "Ocorreu um erro na hora de salvar a pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -127,9 +136,11 @@ namespace PizzariaUDS.Controllers
 
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir a pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir a pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
         [HttpPut("{id}")]
@@ -169,9 +180,11 @@ namespace PizzariaUDS.Controllers
                
                 return Ok(pizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Ocorreu um erro na hora de excluir a pizza do id: {id}");
+                var messagem = $"Ocorreu um erro na hora de excluir a pizza do id: {id}";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
 
@@ -202,9 +215,11 @@ namespace PizzariaUDS.Controllers
 
                 return Ok(pizza);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro na hora de salvar a pizza");
+                var messagem = "Ocorreu um erro na hora de salvar a pizza";
+                logger.LogError(ex, messagem);
+                return StatusCode(StatusCodes.Status500InternalServerError, messagem);
             }
         }
     }
