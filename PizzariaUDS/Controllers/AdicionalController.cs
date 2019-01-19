@@ -153,6 +153,10 @@ namespace PizzariaUDS.Controllers
                 if (adicional == null)
                     return NotFound($"Não foi encontrado o adicional com id: {id}");
 
+                var temPizza = await adicionalService.AdicionalTemPizzasAsync(adicional);
+                if (temPizza)
+                    return BadRequest("Não é possivel excluir um adicional que já foi incluso em uma pizza!");
+
                 await adicionalService.ExcluirAsync(adicional);
                 //Remove o cache de lista dos adicionais, por que o adicional pode estár o cache da lista
                 memoryCache.Remove("listaAdicionalPizza");

@@ -74,5 +74,12 @@ namespace PizzariaUDS.Repositories
             adicional.Id = id;
             return adicional;
         }
+
+        public async Task<bool> TemPizzasAsync(Adicional adicional)
+        {
+            const string sql = @"select id,pizzaid, adicionalid from pizza_adicional where adicionalId = @adicionalId";
+            var resultado = await Database.QueryAsync<PizzaAdicional>(sql, new { adicionalId = adicional.Id });
+            return resultado.Count() > 0;
+        }
     }
 }

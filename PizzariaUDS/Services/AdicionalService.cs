@@ -17,6 +17,8 @@ namespace PizzariaUDS.Services
             this.adicionalRepository = adicionalRepository;
         }
 
+        public async Task<bool> AdicionalTemPizzasAsync(Adicional adicional) => await adicionalRepository.TemPizzasAsync(adicional);
+
         public async Task AlterarAsync(int id, Adicional adicional)
         {
             adicional.Id = id;

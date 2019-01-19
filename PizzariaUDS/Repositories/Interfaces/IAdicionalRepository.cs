@@ -15,5 +15,6 @@ namespace PizzariaUDS.Repositories.Interfaces
         Task AlterarAsync(Adicional adicional);
         Task<IEnumerable<Adicional>> ListarAdicionaisPizzaAsync(int pizzaId);
         Task<IEnumerable<PizzaAdicional>> ListarAdicionaisPizzaAsync(IEnumerable<int> pizzasIds);
+        Task<bool> TemPizzasAsync(Adicional adicional);
     }
 }
