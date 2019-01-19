@@ -62,6 +62,7 @@ namespace PizzariaUDS
             services.AddTransient<ISaborService, SaborService>();
             services.AddTransient<IPizzaService, PizzaService>();
             services.AddTransient<IAdicionalService, AdicionalService>();
+            services.AddTransient<IPedidoService, PedidoService>();
             #endregion
             #region Repositories
             services.AddTransient<ITamanhoRepository, TamanhoRepository>();
@@ -69,6 +70,7 @@ namespace PizzariaUDS
             services.AddTransient<IPizzaRepository, PizzaRepository>();
             services.AddTransient<IAdicionalRepository, AdicionalRepository>();
             services.AddTransient<IPizzaAdicionalRepository, PizzaAdicionalRepository>();
+            services.AddTransient<IPedidoRepository, PedidoRepository>();
             #endregion
             #endregion
         }

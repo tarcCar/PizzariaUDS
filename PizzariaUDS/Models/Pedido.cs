@@ -9,10 +9,33 @@ namespace PizzariaUDS.Models
     {
         public int Id { get; set; }
         public int PizzaId { get; set; }
-        public short TempoPreparoTotal { get; set; }
-        public decimal Valor { get; set; }
+        public int TempoPreparoTotal { get; set; }
+        public decimal ValorTotal { get; set; }
+
+        private Pizza _pizza;
 
         [Computed]
-        public Pizza Pizza { get; set; }
+        public Pizza Pizza
+        {
+            get { return _pizza; }
+            set
+            {
+               
+                if(value != null)
+                {
+                    TempoPreparoTotal = value.TempoPreparo;
+                    ValorTotal = value.Valor;
+                    PizzaId = value.Id;
+                }
+                else
+                {
+                    TempoPreparoTotal = 0;
+                    ValorTotal = 0;
+                }
+                _pizza = value;
+            }
+
+        }
+
     }
 }
