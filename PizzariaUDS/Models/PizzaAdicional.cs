@@ -11,8 +11,9 @@ namespace PizzariaUDS.Models
         public int Id { get; set; }
         public int PizzaId { get; set; }
         public int AdicionalId { get; set; }
-
+        [Computed]
         public virtual Adicional Adicional { get; set; }
+        [Computed]
         public virtual Pizza Pizza { get; set; }
     }
 }
