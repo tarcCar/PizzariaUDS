@@ -14,5 +14,6 @@ namespace PizzariaUDS.Repositories.Interfaces
         Task ExcluirAsync(Pizza pizza);
         Task AlterarAsync(Pizza pizza);
         Task<Pizza> AdicionarAdicionalAsync(Pizza pizza, Adicional adicional);
+        Task<bool> TemPedidoAsync(Pizza pizza);
     }
 }

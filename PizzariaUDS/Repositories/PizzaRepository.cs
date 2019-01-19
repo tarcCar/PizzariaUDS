@@ -150,5 +150,11 @@ namespace PizzariaUDS.Repositories
             pizza.Id = id;
             return pizza;
         }
+        public async Task<bool> TemPedidoAsync(Pizza pizza)
+        {
+            const string sql = "select id,pizzaId,tempoPreparoTotal,valorTotal from pedido where pizzaId = @pizzaId";
+            var resultado = await Database.QueryFirstOrDefaultAsync<Pedido>(sql, new { pizzaId = pizza.Id });
+            return resultado != null;
+        }
     }
 }

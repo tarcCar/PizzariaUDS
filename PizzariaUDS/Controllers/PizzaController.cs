@@ -134,6 +134,11 @@ namespace PizzariaUDS.Controllers
                 if (pizza == null)
                     return NotFound($"Não foi encontrado a pizza com id: {id}");
 
+                var temPedido = await pizzaService.TemPedidoAsync(pizza);
+
+                if (temPedido)
+                    return BadRequest("Não é possivel apagar uma pizza que já tenha pedido!");
+
                 await pizzaService.ExcluirAsync(pizza);
 
                 return NoContent();

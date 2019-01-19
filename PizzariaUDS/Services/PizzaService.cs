@@ -36,5 +36,7 @@ namespace PizzariaUDS.Services
         public async Task<Pizza> RecuperarPorIdAsync(int id) => await pizzaRepository.RecuperarPorIdAsync(id);
 
         public async Task<Pizza> SalvarAsync(Pizza pizza) => await pizzaRepository.SalvarAsync(pizza);
+
+        public async Task<bool> TemPedidoAsync(Pizza pizza) => await pizzaRepository.TemPedidoAsync(pizza);
     }
 }
